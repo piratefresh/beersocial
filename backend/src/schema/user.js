@@ -1,23 +1,21 @@
 
-export default gql`
+const gql = require("graphql-tag")
+
+const user = gql` 
     type Query {
         me: User
+        getUser(id: Int!): User!
+        allUsers: [User!]!
     }
-
     type Mutation {
-    signUp(
-    username: String!
-    email: String!
-    password: String!
-    ): Token!
-
+        signUp(username: String!, email: String!, password: String!): User!
     }
     type User {
-        id: ID!
+        id: Int!
         username: String!
         email: String!
         role: String
-        messages: [Message!]
     }
-
 `;
+
+export default user;

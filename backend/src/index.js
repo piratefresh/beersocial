@@ -1,31 +1,32 @@
+import 'dotenv/config';
 import { ApolloServer, gql } from 'apollo-server-express';
 import express from 'express';
 import cors from 'cors';
+import morgan from 'morgan'
+import merge from 'lodash.merge'
+import models, { sequelize } from './models';
+/* Graphql */
+import typeDefs from './schema/'
+import user from './resolvers/user'
+import hello from './resolvers/hello'
+import beer from './resolvers/beer'
 
-// The GraphQL schema
-const typeDefs = gql`
-  type Query {
-    "A simple type for getting started!"
-    hello: String
-  }
-`;
-
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: () => 'world'
-  }
-};
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
+const server = new ApolloServer({ typeDefs, resolvers: merge(user, hello, beer), 
+  context: {models,} });
 
 const app = express();
-app.use(cors)
+/* Apply Cors for cross domain requests */
+/* app.use(cors) */
+/* Logger */
+app.use(morgan('dev'));
+
 server.applyMiddleware({ app });
 
-app.listen({ port: 4000 }, () =>
+sequelize.sync(/* {force: true} */).then(async () => {
+
+  app.listen({ port: 4000 }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 )
+});
+
+
