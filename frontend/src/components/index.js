@@ -2,6 +2,10 @@ import React from "react";
 import gql from "graphql-tag";
 import {Query} from "react-apollo";
 
+const FormBox = styled(Box)({
+  boxShadow: "0 2px 4px rgba(0, 0, 0, .125)"
+});
+
 function Index() {
   return (
     <Query query={ALL_USERS_QUERY}>
